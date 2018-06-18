@@ -1,0 +1,58 @@
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+xmlns:android="http://schemas.android.com/apk/res/android"
+           id="cordova-plugin-idfa"
+      version="0.9.0">
+
+    <name>cordova-plugin-idfa</name>
+    <description>Cordova plugin to get Advertising ID (IDFA)</description>
+    <license>MIT</license>
+    <keywords>cordova</keywords>
+    <repo>https://github.com/chemerisuk/cordova-plugin-idfa</repo>
+    <issue>https://github.com/chemerisuk/cordova-plugin-idfa/issues</issue>
+
+    <js-module src="www/Idfa.js" name="Idfa">
+        <merges target="cordova.plugins.idfa" />
+    </js-module>
+
+    <engines>
+        <engine name="cordova" version=">=7.1.0"/>
+        <engine name="cordova-android" version=">=7.0.0"/>
+        <engine name="cordova-ios" version=">=4.3.0"/>
+    </engines>
+
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="Idfa">
+                <param name="ios-package" value="IdfaPlugin" />
+            </feature>
+        </config-file>
+
+        <header-file src="src/ios/IdfaPlugin.h" />
+        <source-file src="src/ios/IdfaPlugin.m" />
+
+        <framework src="AdSupport.framework" weak="true" />
+    </platform>
+
+    <platform name="android">
+        <preference name="GOOGLE_SERVICES_VERSION" default="15.0.+"/>
+
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="Idfa">
+                <param name="android-package" value="by.chemerisuk.cordova.advertising.IdfaPlugin" />
+            </feature>
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/*">
+            <uses-permission android:name="android.permission.INTERNET" />
+        </config-file>
+
+        <dependency id="cordova-support-android-plugin" version="~1.0.0"/>
+        <dependency id="cordova-support-google-services" version="~1.2.0"/>
+
+        <framework src="com.google.android.gms:play-services-ads:$GOOGLE_SERVICES_VERSION" />
+
+        <source-file src="src/android/IdfaPlugin.java"
+            target-dir="src/by/chemerisuk/cordova/advertising/" />
+    </platform>
+
+</plugin>
