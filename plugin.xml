@@ -4,7 +4,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
       version="0.9.0">
 
     <name>cordova-plugin-idfa</name>
-    <description>Cordova plugin to get Advertising ID (IDFA)</description>
+    <description>Cordova plugin to get Advertising ID (IDFA or AAID)</description>
     <license>MIT</license>
     <keywords>cordova</keywords>
     <repo>https://github.com/chemerisuk/cordova-plugin-idfa</repo>

@@ -2,9 +2,9 @@ var exec = require("cordova/exec");
 var PLUGIN_NAME = "Idfa";
 
 module.exports = {
-    getIdfa: function() {
+    getInfo: function() {
         return new Promise(function(resolve, reject) {
-            exec(resolve, reject, PLUGIN_NAME, "getIdfa", []);
+            exec(resolve, reject, PLUGIN_NAME, "getInfo", []);
         });
     }
 };

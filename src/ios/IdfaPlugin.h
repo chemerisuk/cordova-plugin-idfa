@@ -2,6 +2,6 @@
 
 @interface IdfaPlugin : CDVPlugin
 
-- (void)getIdfa:(CDVInvokedUrlCommand*)command;
+- (void)getInfo:(CDVInvokedUrlCommand*)command;
 
 @end
