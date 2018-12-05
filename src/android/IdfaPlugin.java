@@ -4,13 +4,11 @@ import android.content.Context;
 
 import by.chemerisuk.cordova.support.CordovaMethod;
 import by.chemerisuk.cordova.support.ReflectiveCordovaPlugin;
-import by.chemerisuk.cordova.support.ReflectiveCordovaPlugin.ExecutionThread;
 
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 
 import org.apache.cordova.CallbackContext;
 import org.json.JSONObject;
-import org.json.JSONException;
 
 
 public class IdfaPlugin extends ReflectiveCordovaPlugin {
