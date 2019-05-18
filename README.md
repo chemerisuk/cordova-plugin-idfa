@@ -1,4 +1,4 @@
-# cordova-plugin-idfa
+# cordova-plugin-idfa<br>[![NPM version][npm-version]][npm-url] [![NPM downloads][npm-downloads]][npm-url] [![Twitter][twitter-follow]][twitter-url]
 Cordova plugin to get Advertising ID (IDFA or AAID)
 
 ## Installation
@@ -24,3 +24,8 @@ cordova.plugins.idfa.getInfo().then(function(info) {
     }
 });
 ```
+[npm-url]: https://www.npmjs.com/package/cordova-plugin-idfa
+[npm-version]: https://img.shields.io/npm/v/cordova-plugin-idfa.svg
+[npm-downloads]: https://img.shields.io/npm/dm/cordova-plugin-idfa.svg
+[twitter-url]: https://twitter.com/chemerisuk
+[twitter-follow]: https://img.shields.io/twitter/follow/chemerisuk.svg?style=social&label=Follow%20me
