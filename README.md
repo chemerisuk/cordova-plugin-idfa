@@ -1,16 +1,30 @@
-# cordova-plugin-idfa<br>[![NPM version][npm-version]][npm-url] [![NPM downloads][npm-downloads]][npm-url] [![Twitter][twitter-follow]][twitter-url]
-Cordova plugin to get Advertising ID (IDFA or AAID)
+# Cordova plugin for getting Advertising ID (IDFA or AAID)
 
-## Installation
+[![NPM version][npm-version]][npm-url] [![NPM downloads][npm-downloads]][npm-url] [![Twitter][twitter-follow]][twitter-url]
 
-    cordova plugin add cordova-plugin-idfa --save
+| [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)][donate-url] | Your help is appreciated. Create a PR, submit a bug or just grab me :beer: |
+|-|-|
 
-Plugin depends on [cordova-support-google-services](https://github.com/chemerisuk/cordova-support-google-services) for setting up google services properly. Please read the [README](https://github.com/chemerisuk/cordova-support-google-services/blob/master/README.md) carefully in order to avoid common issues with a project configuration.
+## Index
+
+<!-- MarkdownTOC levels="2" autolink="true" -->
+
+- [Supported Platforms](#supported-platforms)
+- [Installation](#installation)
+- [Methods](#methods)
+
+<!-- /MarkdownTOC -->
 
 ## Supported Platforms
 
 - iOS
 - Android
+
+## Installation
+
+    $ cordova plugin add cordova-plugin-idfa
+
+Use variable `PLAY_SERVICES_ADS_VERSION` to override dependency version on Android.
 
 ## Methods
 Every method returns a promise that fulfills when a call was successful.
@@ -29,3 +43,4 @@ cordova.plugins.idfa.getInfo().then(function(info) {
 [npm-downloads]: https://img.shields.io/npm/dm/cordova-plugin-idfa.svg
 [twitter-url]: https://twitter.com/chemerisuk
 [twitter-follow]: https://img.shields.io/twitter/follow/chemerisuk.svg?style=social&label=Follow%20me
+[donate-url]: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=E62XVSR3XUGDE&source=url
