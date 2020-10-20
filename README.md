@@ -25,7 +25,7 @@
 
     $ cordova plugin add cordova-plugin-idfa
 
-Use variable `PLAY_SERVICES_ADS_VERSION` to override dependency version on Android.
+Use variable `ANDROID_PLAY_ADID_VERSION` to override dependency version on Android.
 
 ## API
 
