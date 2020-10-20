@@ -36,11 +36,11 @@ The API is available on the `cordova.plugins.idfa` global object.
 Returns a `Promise<object>` with the following fields:
 
 - `limitAdTracking`: `boolean` - Whether usage of advertising id is allowed by user.
-- `idfa`: `string` - Identifier for advertisers (_iOS only_).
-- `trackingTransparencyStatus`: `"NotAvailable"` | `"Authorized"` | `"Denied"` | `"Restricted"` | `"NotDetermined"` -
+- `idfa`: `string` (_iOS only_) - Identifier for advertisers.
+- `trackingTransparencyStatus` (_iOS only_): `"NotAvailable"` | `"Authorized"` | `"Denied"` | `"Restricted"` | `"NotDetermined"` -
    Tracking transparency status, available on iOS 14+ devices. On devices with iOS < 14 the value will always be
    `"NotAvailable"`. For the meaning of other values see [the tracking transparency API docs][tracking-transparency-api].
-- `aaid`: `string` - Android advertising ID (_Android only_).
+- `aaid`: `string` (_Android only_) - Android advertising ID.
 
 ## Example
 
