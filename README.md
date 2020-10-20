@@ -18,7 +18,7 @@
 
 ## Supported Platforms
 
-- iOS (Xcode 12+)
+- iOS
 - Android
 
 ## Installation
