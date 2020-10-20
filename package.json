@@ -19,6 +19,7 @@
     "url": "https://github.com/chemerisuk/cordova-plugin-idfa/issues"
   },
   "homepage": "https://github.com/chemerisuk/cordova-plugin-idfa#readme",
+  "funding": "https://github.com/chemerisuk/cordova-plugin-idfa?sponsor=1",
   "keywords": [
     "cordova",
     "IFA",
