@@ -2,6 +2,7 @@
   "name": "cordova-plugin-idfa",
   "version": "1.2.0",
   "description": "Cordova plugin for getting Advertising ID (IDFA or AAID)",
+  "types": "./types/index.d.ts",
   "cordova": {
     "id": "cordova-plugin-idfa",
     "platforms": [
