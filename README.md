@@ -36,8 +36,28 @@ Returns a `Promise<object>` with the following fields:
 - `idfa`: `string` (_iOS only_) - Identifier for advertisers.
 - `trackingTransparencyStatus` (_iOS only_): `"NotAvailable"` | `"Authorized"` | `"Denied"` | `"Restricted"` | `"NotDetermined"` -
    Tracking transparency status, available on iOS 14+ devices. On devices with iOS < 14 the value will always be
-   `"NotAvailable"`. For the meaning of other values see [the tracking transparency API docs](https://developer.apple.com/documentation/apptrackingtransparency/attrackingmanagerauthorizationstatus).
+   `"NotAvailable"`. For the meaning of other values see [the tracking transparency API docs][authorizationstatus-api-url].
 - `aaid`: `string` (_Android only_) - Android advertising ID.
+
+### requestTrackingAuthorization()
+
+_(iOS only)_ A one-time request to authorize or deny access to app-related data that can be used for
+tracking the user or the device. See [Apple's API docs][requesttrackingauthorization-api-url]
+for more info on the dialog presented to the user. Available only for iOS 14+ devices.
+
+Returns a `Promise<string>` with the same values as [`getInfo()#trackingTransparencyStatus`](#getinfo) field.
+On devices with iOS < 14 the promise will always resolve with `"NotAvailable"`.
+
+**Note:** You should make sure to set the `NSUserTrackingUsageDescription` key in your app's
+Information Property List file. You can do it with the following code in your Cordova project's `config.xml`:
+```xml
+<platform name="ios">
+    <edit-config target="NSUserTrackingUsageDescription" file="*-Info.plist" mode="merge">
+        <string>My tracking usage description</string>
+    </edit-config>
+</platform>
+```
+See [Apple's API docs][nsusertrackingusagedescription-api-url] for more info on this configuration key.
 
 ## Example
 
@@ -46,6 +66,10 @@ cordova.plugins.idfa.getInfo().then(function(info) {
     if (!info.limitAdTracking) {
         console.log(info.idfa || info.aaid);
     }
+});
+
+cordova.plugins.idfa.requestTrackingAuthorization().then(function(status) {
+    console.log(status);
 });
 ```
 
@@ -56,3 +80,6 @@ cordova.plugins.idfa.getInfo().then(function(info) {
 [twitter-url]: https://twitter.com/chemerisuk
 [twitter-follow]: https://img.shields.io/twitter/follow/chemerisuk.svg?style=social&label=Follow%20me
 [donate-url]: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=E62XVSR3XUGDE&source=url
+[authorizationstatus-api-url]: https://developer.apple.com/documentation/apptrackingtransparency/attrackingmanagerauthorizationstatus
+[requesttrackingauthorization-api-url]: https://developer.apple.com/documentation/apptrackingtransparency/attrackingmanager/3547037-requesttrackingauthorization
+[nsusertrackingusagedescription-api-url]: https://developer.apple.com/documentation/bundleresources/information_property_list/nsusertrackingusagedescription

@@ -47,4 +47,36 @@
     }];
 }
 
+- (void)requestTrackingAuthorization:(CDVInvokedUrlCommand *)command {
+    [self.commandDelegate runInBackground:^{
+        if (@available(iOS 14, *)) {
+            [ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
+                NSString *trackingTransparencyStatus;
+                switch (status) {
+                    case ATTrackingManagerAuthorizationStatusAuthorized:
+                        trackingTransparencyStatus = @"Authorized";
+                        break;
+
+                    case ATTrackingManagerAuthorizationStatusDenied:
+                        trackingTransparencyStatus = @"Denied";
+                        break;
+
+                    case ATTrackingManagerAuthorizationStatusRestricted:
+                        trackingTransparencyStatus = @"Restricted";
+                        break;
+
+                    default:
+                        trackingTransparencyStatus = @"NotDetermined";
+                        break;
+                }
+                CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:trackingTransparencyStatus];
+                [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+            }];
+        } else {
+            CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"NotAvailable"];
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        }
+    }];
+}
+
 @end
