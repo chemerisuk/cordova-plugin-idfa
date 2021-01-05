@@ -8,26 +8,26 @@
     [self.commandDelegate runInBackground:^{
         NSString *idfaString = [[[ASIdentifierManager sharedManager] advertisingIdentifier] UUIDString];
         BOOL enabled = [[ASIdentifierManager sharedManager] isAdvertisingTrackingEnabled];
-        NSString *trackingTransparencyStatus = @"NotAvailable";
+        NSString *trackingPermission;
 
         if (@available(iOS 14, *)) {
             ATTrackingManagerAuthorizationStatus status = ATTrackingManager.trackingAuthorizationStatus;
             switch (status) {
                 case ATTrackingManagerAuthorizationStatusAuthorized:
-                    trackingTransparencyStatus = @"Authorized";
+                    trackingPermission = @"Authorized";
                     enabled = YES;
                     break;
 
                 case ATTrackingManagerAuthorizationStatusDenied:
-                    trackingTransparencyStatus = @"Denied";
+                    trackingPermission = @"Denied";
                     break;
 
                 case ATTrackingManagerAuthorizationStatusRestricted:
-                    trackingTransparencyStatus = @"Restricted";
+                    trackingPermission = @"Restricted";
                     break;
 
                 default:
-                    trackingTransparencyStatus = @"NotDetermined";
+                    trackingPermission = @"NotDetermined";
                     break;
             }
 
@@ -40,40 +40,40 @@
 
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:@{
             @"idfa": idfaString,
-            @"limitAdTracking": [NSNumber numberWithBool:!enabled],
-            @"trackingTransparencyStatus": trackingTransparencyStatus
+            @"isTrackingLimited": [NSNumber numberWithBool:!enabled],
+            @"trackingPermission": trackingPermission ?: [NSNull null]
         }];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }];
 }
 
-- (void)requestTrackingAuthorization:(CDVInvokedUrlCommand *)command {
+- (void)requestPermission:(CDVInvokedUrlCommand *)command {
     [self.commandDelegate runInBackground:^{
         if (@available(iOS 14, *)) {
             [ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
-                NSString *trackingTransparencyStatus;
+                NSString *trackingPermission;
                 switch (status) {
                     case ATTrackingManagerAuthorizationStatusAuthorized:
-                        trackingTransparencyStatus = @"Authorized";
+                        trackingPermission = @"Authorized";
                         break;
 
                     case ATTrackingManagerAuthorizationStatusDenied:
-                        trackingTransparencyStatus = @"Denied";
+                        trackingPermission = @"Denied";
                         break;
 
                     case ATTrackingManagerAuthorizationStatusRestricted:
-                        trackingTransparencyStatus = @"Restricted";
+                        trackingPermission = @"Restricted";
                         break;
 
                     default:
-                        trackingTransparencyStatus = @"NotDetermined";
+                        trackingPermission = @"NotDetermined";
                         break;
                 }
-                CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:trackingTransparencyStatus];
+                CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:trackingPermission];
                 [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
             }];
         } else {
-            CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"NotAvailable"];
+            CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
             [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
         }
     }];

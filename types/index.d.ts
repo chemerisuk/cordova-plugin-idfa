@@ -1,5 +1,4 @@
-type TrackingTransparencyStatus =
-    | "NotAvailable"
+type TrackingPermission =
     | "Authorized"
     | "Denied"
     | "Restricted"
@@ -12,7 +11,7 @@ interface IdfaData {
     /**
      * Whether usage of advertising id is allowed by user.
      */
-    limitAdTracking: boolean;
+    isTrackingLimited: boolean;
 
     /**
      * Identifier for advertisers _(iOS only)_.
@@ -20,12 +19,10 @@ interface IdfaData {
     idfa?: string;
 
     /**
-     * Tracking transparency status _(iOS only)_. Available only for iOS 14+ devices.
-     * On devices with iOS < 14 the value will always be `"NotAvailable"`.
-     * For the meaning of other values see
-     * [the tracking transparency API docs](https://developer.apple.com/documentation/apptrackingtransparency/attrackingmanagerauthorizationstatus).
+     * Tracking permission status _(iOS only)_. Available only for iOS 14+ devices.
+     * On devices with iOS < 14 the value will always be `null`.
      */
-    trackingTransparencyStatus?: TrackingTransparencyStatus;
+    trackingPermission?: TrackingPermission | null;
 
     /**
      * Android advertising ID _(Android only)_.
@@ -38,12 +35,23 @@ interface IdfaData {
  */
 interface IdfaPlugin {
     /**
+     * Possible tracking permission values. For the meaning of the values see
+     * [the tracking transparency API docs](https://developer.apple.com/documentation/apptrackingtransparency/attrackingmanagerauthorizationstatus).
+     */
+    TrackingPermission: Readonly<{
+        Authorized: "Authorized";
+        Denied: "Denied";
+        Restricted: "Restricted";
+        NotDetermined: "NotDetermined";
+    }>;
+
+    /**
      * Retrieve the advertising id info for the current platform.
      *
      * @example
      *
      * cordova.plugins.idfa.getInfo().then((info) => {
-     *     if (!info.limitAdTracking) {
+     *     if (!info.isTrackingLimited) {
      *         console.log(info.idfa || info.aaid);
      *     }
      * });
@@ -55,10 +63,10 @@ interface IdfaPlugin {
      * that can be used for tracking the user or the device. See
      * [Apple's API docs](https://developer.apple.com/documentation/apptrackingtransparency/attrackingmanager/3547037-requesttrackingauthorization)
      * for more info. Available only for iOS 14+ devices. On devices with iOS < 14 the
-     * returned promise will always resolve with `"NotAvailable"`.
+     * returned promise will always resolve with `null`.
      *
      * **Note:** You should make sure to set the `NSUserTrackingUsageDescription` key in your app's
-     * Information Property List file. See
+     * Information Property List file, otherwise your app will crash when you use this API. See
      * [Apple's API docs](https://developer.apple.com/documentation/bundleresources/information_property_list/nsusertrackingusagedescription)
      * for more info.
      *
@@ -72,11 +80,11 @@ interface IdfaPlugin {
      * </platform>
      *
      * // index.ts
-     * cordova.plugins.idfa.requestTrackingAuthorization().then((status) => {
+     * cordova.plugins.idfa.requestPermission().then((status) => {
      *     console.log(status);
      * });
      */
-    requestTrackingAuthorization(): Promise<TrackingTransparencyStatus>;
+    requestPermission(): Promise<TrackingPermission | null>;
 }
 
 interface CordovaPlugins {
