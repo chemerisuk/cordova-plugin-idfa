@@ -8,28 +8,10 @@
     [self.commandDelegate runInBackground:^{
         NSString *idfaString = [[[ASIdentifierManager sharedManager] advertisingIdentifier] UUIDString];
         BOOL enabled = [[ASIdentifierManager sharedManager] isAdvertisingTrackingEnabled];
-        NSString *trackingPermission;
+        NSNumber *trackingPermission;
 
         if (@available(iOS 14, *)) {
-            ATTrackingManagerAuthorizationStatus status = ATTrackingManager.trackingAuthorizationStatus;
-            switch (status) {
-                case ATTrackingManagerAuthorizationStatusAuthorized:
-                    trackingPermission = @"Authorized";
-                    enabled = YES;
-                    break;
-
-                case ATTrackingManagerAuthorizationStatusDenied:
-                    trackingPermission = @"Denied";
-                    break;
-
-                case ATTrackingManagerAuthorizationStatusRestricted:
-                    trackingPermission = @"Restricted";
-                    break;
-
-                default:
-                    trackingPermission = @"NotDetermined";
-                    break;
-            }
+            trackingPermission = @(ATTrackingManager.trackingAuthorizationStatus);
 
             // workaround, as long as Apple deferred the roll-out of manadatory tracking permission popup
             // we'll assume that if the idfa string is not nullish, then it's allowed by user
@@ -40,7 +22,7 @@
 
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:@{
             @"idfa": idfaString,
-            @"isTrackingLimited": [NSNumber numberWithBool:!enabled],
+            @"trackingLimited": [NSNumber numberWithBool:!enabled],
             @"trackingPermission": trackingPermission ?: [NSNull null]
         }];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -51,25 +33,8 @@
     [self.commandDelegate runInBackground:^{
         if (@available(iOS 14, *)) {
             [ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
-                NSString *trackingPermission;
-                switch (status) {
-                    case ATTrackingManagerAuthorizationStatusAuthorized:
-                        trackingPermission = @"Authorized";
-                        break;
-
-                    case ATTrackingManagerAuthorizationStatusDenied:
-                        trackingPermission = @"Denied";
-                        break;
-
-                    case ATTrackingManagerAuthorizationStatusRestricted:
-                        trackingPermission = @"Restricted";
-                        break;
-
-                    default:
-                        trackingPermission = @"NotDetermined";
-                        break;
-                }
-                CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:trackingPermission];
+                CDVPluginResult* pluginResult =
+                    [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsNSUInteger:status];
                 [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
             }];
         } else {

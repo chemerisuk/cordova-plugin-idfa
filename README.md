@@ -34,9 +34,9 @@ The API is available on the `cordova.plugins.idfa` global object.
 
 Returns a `Promise<object>` with the following fields:
 
-- `isTrackingLimited`: `boolean` - Whether usage of advertising id is allowed by user.
+- `trackingLimited`: `boolean` - Whether usage of advertising id is allowed by user.
 - `idfa`: `string` (_iOS only_) - Identifier for advertisers.
-- `trackingPermission` (_iOS only_): [`TrackingPermission`](#trackingpermission)
+- `trackingPermission` (_iOS only_): [`number`](#tracking-permission-values)
    Tracking permission status, available on iOS 14+ devices. On devices with iOS < 14 the value will
    always be `null`.
 - `aaid`: `string` (_Android only_) - Android advertising ID.
@@ -47,7 +47,7 @@ _(iOS only)_ A one-time request to authorize or deny access to app-related data 
 tracking the user or the device. See [Apple's API docs][requesttrackingauthorization-api-url]
 for more info on the dialog presented to the user. Available only for iOS 14+ devices.
 
-Returns a `Promise<`[`TrackingPermission`](#trackingpermission)`>`. On devices
+Returns a `Promise<`[`number`](#tracking-permission-values)`>`. On devices
 with iOS < 14 the promise will always resolve with `null`.
 
 **Note:** You should make sure to set the
@@ -62,31 +62,33 @@ You can do it with the following code in your Cordova project's `config.xml`:
 </platform>
 ```
 
-### TrackingPermission
+### Tracking Permission Values
 
-An `object` containing all possible tracking permission values returned by [`getInfo()#trackingPermission`](#getinfo)
-and [`requestPermission()`](#requestPermission).
+The tracking permission values are `number`s returned by [`getInfo()#trackingPermission`](#getinfo)
+and [`requestPermission()`](#requestPermission). The possible values are stored in constants on the
+plugin object. See the [example](#example) on how to use them.
 
 For the meaning of the values see [the tracking transparency API docs][authorizationstatus-api-url]:
 
-- `Authorized`: `'Authorized'`
-- `Denied`: `'Denied'`
-- `Restricted`: `'Restricted'`
-- `NotDetermined`: `'NotDetermined'`
+| Constant                           | Value | Description                                                                                               |
+| :--------------------------------- | :---- | :-------------------------------------------------------------------------------------------------------- |
+| TRACKING_PERMISSION_NOT_DETERMINED | 0     | See [`ATTrackingManagerAuthorizationStatusNotDetermined`][tracking-manager-status-not-determined-api-url] |
+| TRACKING_PERMISSION_RESTRICTED     | 1     | See [`ATTrackingManagerAuthorizationStatusRestricted`][tracking-manager-status-restricted-api-url]        |
+| TRACKING_PERMISSION_DENIED         | 2     | See [`ATTrackingManagerAuthorizationStatusDenied`][tracking-manager-status-denied-api-url]                |
+| TRACKING_PERMISSION_AUTHORIZED     | 3     | See [`ATTrackingManagerAuthorizationStatusAuthorized`][tracking-manager-status-authorized-api-url]        |
 
 ## Example
 
 ```js
 const idfaPlugin = cordova.plugins.idfa;
-const TrackingPermission = idfaPlugin.TrackingPermission;
 
 idfaPlugin.getInfo()
     .then(info => {
-        if (!info.isTrackingLimited) {
+        if (!info.trackingLimited) {
             return info.idfa || info.aaid;
-        } else if (info.trackingPermission === TrackingPermission.NotDetermined) {
+        } else if (info.trackingPermission === idfaPlugin.TRACKING_PERMISSION_NOT_DETERMINED) {
             return idfaPlugin.requestPermission().then(result => {
-                if (result !== TrackingPermission.Authorized) {
+                if (result !== idfaPlugin.TRACKING_PERMISSION_AUTHORIZED) {
                     return;
                 }
 
@@ -113,3 +115,7 @@ idfaPlugin.getInfo()
 [authorizationstatus-api-url]: https://developer.apple.com/documentation/apptrackingtransparency/attrackingmanagerauthorizationstatus
 [requesttrackingauthorization-api-url]: https://developer.apple.com/documentation/apptrackingtransparency/attrackingmanager/3547037-requesttrackingauthorization
 [nsusertrackingusagedescription-api-url]: https://developer.apple.com/documentation/bundleresources/information_property_list/nsusertrackingusagedescription
+[tracking-manager-status-not-determined-api-url]: https://developer.apple.com/documentation/apptrackingtransparency/attrackingmanagerauthorizationstatus/attrackingmanagerauthorizationstatusnotdetermined
+[tracking-manager-status-restricted-api-url]: https://developer.apple.com/documentation/apptrackingtransparency/attrackingmanagerauthorizationstatus/attrackingmanagerauthorizationstatusrestricted
+[tracking-manager-status-denied-api-url]: https://developer.apple.com/documentation/apptrackingtransparency/attrackingmanagerauthorizationstatus/attrackingmanagerauthorizationstatusdenied
+[tracking-manager-status-authorized-api-url]: https://developer.apple.com/documentation/apptrackingtransparency/attrackingmanagerauthorizationstatus/attrackingmanagerauthorizationstatusauthorized
