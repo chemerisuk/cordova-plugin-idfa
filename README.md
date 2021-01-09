@@ -22,7 +22,9 @@
 
     $ cordova plugin add cordova-plugin-idfa
 
-Use variable `ANDROID_PLAY_ADID_VERSION` to override dependency version on Android.
+Use variable `ANDROID_PLAY_ADID_VERSION` to override dependency version on Android:
+
+    $ cordova plugin add cordova-plugin-idfa --variable ANDROID_PLAY_ADID_VERSION='16.+'
 
 ## API
 
@@ -32,21 +34,73 @@ The API is available on the `cordova.plugins.idfa` global object.
 
 Returns a `Promise<object>` with the following fields:
 
-- `limitAdTracking`: `boolean` - Whether usage of advertising id is allowed by user.
+- `trackingLimited`: `boolean` - Whether usage of advertising id is allowed by user.
 - `idfa`: `string` (_iOS only_) - Identifier for advertisers.
-- `trackingTransparencyStatus` (_iOS only_): `"NotAvailable"` | `"Authorized"` | `"Denied"` | `"Restricted"` | `"NotDetermined"` -
-   Tracking transparency status, available on iOS 14+ devices. On devices with iOS < 14 the value will always be
-   `"NotAvailable"`. For the meaning of other values see [the tracking transparency API docs](https://developer.apple.com/documentation/apptrackingtransparency/attrackingmanagerauthorizationstatus).
+- `trackingPermission` (_iOS only_): [`number`](#tracking-permission-values)
+   Tracking permission status, available on iOS 14+ devices. On devices with iOS < 14 the value will
+   always be `null`.
 - `aaid`: `string` (_Android only_) - Android advertising ID.
+
+### requestPermission()
+
+_(iOS only)_ A one-time request to authorize or deny access to app-related data that can be used for
+tracking the user or the device. See [Apple's API docs][requesttrackingauthorization-api-url]
+for more info on the dialog presented to the user. Available only for iOS 14+ devices.
+
+Returns a `Promise<`[`number`](#tracking-permission-values)`>`. On devices
+with iOS < 14 the method will return a rejected promise.
+
+**Note:** You should make sure to set the
+[`NSUserTrackingUsageDescription`][nsusertrackingusagedescription-api-url] key in your app's
+Information Property List file, otherwise your app will crash when you use this API.
+You can do it with the following code in your Cordova project's `config.xml`:
+```xml
+<platform name="ios">
+    <edit-config target="NSUserTrackingUsageDescription" file="*-Info.plist" mode="merge">
+        <string>My tracking usage description</string>
+    </edit-config>
+</platform>
+```
+
+### Tracking Permission Values
+
+The tracking permission values are `number`s returned by [`getInfo()#trackingPermission`](#getinfo)
+and [`requestPermission()`](#requestPermission). The possible values are stored in constants on the
+plugin object. See the [example](#example) on how to use them.
+
+For the meaning of the values see [the tracking transparency API docs][authorizationstatus-api-url]:
+
+| Constant                           | Value | Description                                                                                               |
+| :--------------------------------- | :---- | :-------------------------------------------------------------------------------------------------------- |
+| TRACKING_PERMISSION_NOT_DETERMINED | 0     | See [`ATTrackingManagerAuthorizationStatusNotDetermined`][tracking-manager-status-not-determined-api-url] |
+| TRACKING_PERMISSION_RESTRICTED     | 1     | See [`ATTrackingManagerAuthorizationStatusRestricted`][tracking-manager-status-restricted-api-url]        |
+| TRACKING_PERMISSION_DENIED         | 2     | See [`ATTrackingManagerAuthorizationStatusDenied`][tracking-manager-status-denied-api-url]                |
+| TRACKING_PERMISSION_AUTHORIZED     | 3     | See [`ATTrackingManagerAuthorizationStatusAuthorized`][tracking-manager-status-authorized-api-url]        |
 
 ## Example
 
 ```js
-cordova.plugins.idfa.getInfo().then(function(info) {
-    if (!info.limitAdTracking) {
-        console.log(info.idfa || info.aaid);
-    }
-});
+const idfaPlugin = cordova.plugins.idfa;
+
+idfaPlugin.getInfo()
+    .then(info => {
+        if (!info.trackingLimited) {
+            return info.idfa || info.aaid;
+        } else if (info.trackingPermission === idfaPlugin.TRACKING_PERMISSION_NOT_DETERMINED) {
+            return idfaPlugin.requestPermission().then(result => {
+                if (result === idfaPlugin.TRACKING_PERMISSION_AUTHORIZED) {
+                    return idfaPlugin.getInfo().then(info => {
+                        return info.idfa || info.aaid;
+                    });
+                }
+            });
+        }
+    })
+    .then(idfaOrAaid => {
+        if (idfaOrAaid) {
+            console.log(idfaOrAaid);
+        }
+    });
 ```
 
 [npm-url]: https://www.npmjs.com/package/cordova-plugin-idfa
@@ -56,3 +110,10 @@ cordova.plugins.idfa.getInfo().then(function(info) {
 [twitter-url]: https://twitter.com/chemerisuk
 [twitter-follow]: https://img.shields.io/twitter/follow/chemerisuk.svg?style=social&label=Follow%20me
 [donate-url]: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=E62XVSR3XUGDE&source=url
+[authorizationstatus-api-url]: https://developer.apple.com/documentation/apptrackingtransparency/attrackingmanagerauthorizationstatus
+[requesttrackingauthorization-api-url]: https://developer.apple.com/documentation/apptrackingtransparency/attrackingmanager/3547037-requesttrackingauthorization
+[nsusertrackingusagedescription-api-url]: https://developer.apple.com/documentation/bundleresources/information_property_list/nsusertrackingusagedescription
+[tracking-manager-status-not-determined-api-url]: https://developer.apple.com/documentation/apptrackingtransparency/attrackingmanagerauthorizationstatus/attrackingmanagerauthorizationstatusnotdetermined
+[tracking-manager-status-restricted-api-url]: https://developer.apple.com/documentation/apptrackingtransparency/attrackingmanagerauthorizationstatus/attrackingmanagerauthorizationstatusrestricted
+[tracking-manager-status-denied-api-url]: https://developer.apple.com/documentation/apptrackingtransparency/attrackingmanagerauthorizationstatus/attrackingmanagerauthorizationstatusdenied
+[tracking-manager-status-authorized-api-url]: https://developer.apple.com/documentation/apptrackingtransparency/attrackingmanagerauthorizationstatus/attrackingmanagerauthorizationstatusauthorized

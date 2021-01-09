@@ -4,4 +4,6 @@
 
 - (void)getInfo:(CDVInvokedUrlCommand*)command;
 
+- (void)requestPermission:(CDVInvokedUrlCommand*)command;
+
 @end
