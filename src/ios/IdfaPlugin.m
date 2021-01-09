@@ -38,7 +38,9 @@
                 [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
             }];
         } else {
-            CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+            CDVPluginResult* pluginResult = [CDVPluginResult
+                                             resultWithStatus:CDVCommandStatus_ERROR
+                                             messageAsString:@"requestPermission is supported only for iOS >= 14!"];
             [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
         }
     }];

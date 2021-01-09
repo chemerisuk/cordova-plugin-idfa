@@ -48,7 +48,7 @@ tracking the user or the device. See [Apple's API docs][requesttrackingauthoriza
 for more info on the dialog presented to the user. Available only for iOS 14+ devices.
 
 Returns a `Promise<`[`number`](#tracking-permission-values)`>`. On devices
-with iOS < 14 the promise will always resolve with `null`.
+with iOS < 14 the method will return a rejected promise.
 
 **Note:** You should make sure to set the
 [`NSUserTrackingUsageDescription`][nsusertrackingusagedescription-api-url] key in your app's
@@ -88,13 +88,11 @@ idfaPlugin.getInfo()
             return info.idfa || info.aaid;
         } else if (info.trackingPermission === idfaPlugin.TRACKING_PERMISSION_NOT_DETERMINED) {
             return idfaPlugin.requestPermission().then(result => {
-                if (result !== idfaPlugin.TRACKING_PERMISSION_AUTHORIZED) {
-                    return;
+                if (result === idfaPlugin.TRACKING_PERMISSION_AUTHORIZED) {
+                    return idfaPlugin.getInfo().then(info => {
+                        return info.idfa || info.aaid;
+                    });
                 }
-
-                return idfaPlugin.getInfo().then(info => {
-                    return info.idfa || info.aaid;
-                });
             });
         }
     })

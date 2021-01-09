@@ -75,7 +75,7 @@ interface IdfaPlugin {
      * for more info.
      *
      * @returns A promise with the user's tracking permission choice. Available only for iOS 14+ devices.
-     * On devices with iOS < 14 the returned promise will always resolve with `null`.
+     * On devices with iOS < 14 the returned promise will be rejected.
      * For the meaning of the returned values see
      * [the tracking transparency API docs](https://developer.apple.com/documentation/apptrackingtransparency/attrackingmanagerauthorizationstatus).
      *
