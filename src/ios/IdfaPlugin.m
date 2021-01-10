@@ -8,23 +8,29 @@
     [self.commandDelegate runInBackground:^{
         NSString *idfaString = [[[ASIdentifierManager sharedManager] advertisingIdentifier] UUIDString];
         BOOL enabled = [[ASIdentifierManager sharedManager] isAdvertisingTrackingEnabled];
-        NSNumber *trackingPermission;
+        NSDictionary* resultData;
 
         if (@available(iOS 14, *)) {
-            trackingPermission = @(ATTrackingManager.trackingAuthorizationStatus);
-
+            NSNumber* trackingPermission = @(ATTrackingManager.trackingAuthorizationStatus);
             // workaround, as long as Apple deferred the roll-out of manadatory tracking permission popup
             // we'll assume that if the idfa string is not nullish, then it's allowed by user
             if (!enabled && idfaString != nil && ![@"00000000-0000-0000-0000-000000000000" isEqualToString:idfaString]) {
                 enabled = YES;
             }
+
+            resultData = @{
+                @"idfa": idfaString,
+                @"trackingLimited": [NSNumber numberWithBool:!enabled],
+                @"trackingPermission": trackingPermission
+            };
+        } else {
+            resultData = @{
+                @"idfa": idfaString,
+                @"trackingLimited": [NSNumber numberWithBool:!enabled]
+            };
         }
 
-        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:@{
-            @"idfa": idfaString,
-            @"trackingLimited": [NSNumber numberWithBool:!enabled],
-            @"trackingPermission": trackingPermission ?: [NSNull null]
-        }];
+        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:resultData];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }];
 }
@@ -40,7 +46,7 @@
         } else {
             CDVPluginResult* pluginResult = [CDVPluginResult
                                              resultWithStatus:CDVCommandStatus_ERROR
-                                             messageAsString:@"requestPermission is supported only for iOS >= 14!"];
+                                             messageAsString:@"requestPermission is supported only for iOS >= 14"];
             [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
         }
     }];
