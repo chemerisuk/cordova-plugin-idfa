@@ -16,12 +16,11 @@ interface IdfaData {
 
     /**
      * Tracking permission status _(iOS only)_. Available only for iOS 14+ devices.
-     * On devices with iOS < 14 the value will always be `null`.
      *
      * For the meaning of the values see
      * [the tracking transparency API docs](https://developer.apple.com/documentation/apptrackingtransparency/attrackingmanagerauthorizationstatus).
      */
-    trackingPermission?: TrackingPermission | null;
+    trackingPermission?: TrackingPermission;
 
     /**
      * Android advertising ID _(Android only)_.

@@ -36,22 +36,21 @@ Returns a `Promise<object>` with the following fields:
 
 - `trackingLimited`: `boolean` - Whether usage of advertising id is allowed by user.
 - `idfa`: `string` (_iOS only_) - Identifier for advertisers.
-- `trackingPermission` (_iOS only_): [`number`](#tracking-permission-values)
-   Tracking permission status, available on iOS 14+ devices. On devices with iOS < 14 the value will
-   always be `null`.
+- `trackingPermission` (_iOS 14+ only_): [`number`](#tracking-permission-values)
+   Tracking permission status, available on iOS 14+ devices.
 - `aaid`: `string` (_Android only_) - Android advertising ID.
 
 ### requestPermission()
 
 _(iOS only)_ A one-time request to authorize or deny access to app-related data that can be used for
-tracking the user or the device. See [Apple's API docs][requesttrackingauthorization-api-url]
+tracking the user or the device. See [Apple's API docs](https://developer.apple.com/documentation/apptrackingtransparency/attrackingmanager/3547037-requesttrackingauthorization)
 for more info on the dialog presented to the user. Available only for iOS 14+ devices.
 
 Returns a `Promise<`[`number`](#tracking-permission-values)`>`. On devices
 with iOS < 14 the method will return a rejected promise.
 
 **Note:** You should make sure to set the
-[`NSUserTrackingUsageDescription`][nsusertrackingusagedescription-api-url] key in your app's
+[`NSUserTrackingUsageDescription`](https://developer.apple.com/documentation/bundleresources/information_property_list/nsusertrackingusagedescription) key in your app's
 Information Property List file, otherwise your app will crash when you use this API.
 You can do it with the following code in your Cordova project's `config.xml`:
 ```xml
@@ -64,18 +63,18 @@ You can do it with the following code in your Cordova project's `config.xml`:
 
 ### Tracking Permission Values
 
-The tracking permission values are `number`s returned by [`getInfo()#trackingPermission`](#getinfo)
+The tracking permission values are `number`s returned by [`getInfo()`](#getinfo)
 and [`requestPermission()`](#requestPermission). The possible values are stored in constants on the
 plugin object. See the [example](#example) on how to use them.
 
-For the meaning of the values see [the tracking transparency API docs][authorizationstatus-api-url]:
+For the meaning of the values see [the tracking transparency API docs](https://developer.apple.com/documentation/apptrackingtransparency/attrackingmanagerauthorizationstatus):
 
 | Constant                           | Value | Description                                                                                               |
 | :--------------------------------- | :---- | :-------------------------------------------------------------------------------------------------------- |
-| TRACKING_PERMISSION_NOT_DETERMINED | 0     | See [`ATTrackingManagerAuthorizationStatusNotDetermined`][tracking-manager-status-not-determined-api-url] |
-| TRACKING_PERMISSION_RESTRICTED     | 1     | See [`ATTrackingManagerAuthorizationStatusRestricted`][tracking-manager-status-restricted-api-url]        |
-| TRACKING_PERMISSION_DENIED         | 2     | See [`ATTrackingManagerAuthorizationStatusDenied`][tracking-manager-status-denied-api-url]                |
-| TRACKING_PERMISSION_AUTHORIZED     | 3     | See [`ATTrackingManagerAuthorizationStatusAuthorized`][tracking-manager-status-authorized-api-url]        |
+| TRACKING_PERMISSION_NOT_DETERMINED | 0     | User has not yet received an authorization request to authorize access to IDFA |
+| TRACKING_PERMISSION_RESTRICTED     | 1     | User restricted the value returned if authorization to access IDFA |
+| TRACKING_PERMISSION_DENIED         | 2     | The value returned if the user denies authorization to access IDFA |
+| TRACKING_PERMISSION_AUTHORIZED     | 3     | The value returned if the user authorizes access to IDFA |
 
 ## Example
 
@@ -110,10 +109,3 @@ idfaPlugin.getInfo()
 [twitter-url]: https://twitter.com/chemerisuk
 [twitter-follow]: https://img.shields.io/twitter/follow/chemerisuk.svg?style=social&label=Follow%20me
 [donate-url]: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=E62XVSR3XUGDE&source=url
-[authorizationstatus-api-url]: https://developer.apple.com/documentation/apptrackingtransparency/attrackingmanagerauthorizationstatus
-[requesttrackingauthorization-api-url]: https://developer.apple.com/documentation/apptrackingtransparency/attrackingmanager/3547037-requesttrackingauthorization
-[nsusertrackingusagedescription-api-url]: https://developer.apple.com/documentation/bundleresources/information_property_list/nsusertrackingusagedescription
-[tracking-manager-status-not-determined-api-url]: https://developer.apple.com/documentation/apptrackingtransparency/attrackingmanagerauthorizationstatus/attrackingmanagerauthorizationstatusnotdetermined
-[tracking-manager-status-restricted-api-url]: https://developer.apple.com/documentation/apptrackingtransparency/attrackingmanagerauthorizationstatus/attrackingmanagerauthorizationstatusrestricted
-[tracking-manager-status-denied-api-url]: https://developer.apple.com/documentation/apptrackingtransparency/attrackingmanagerauthorizationstatus/attrackingmanagerauthorizationstatusdenied
-[tracking-manager-status-authorized-api-url]: https://developer.apple.com/documentation/apptrackingtransparency/attrackingmanagerauthorizationstatus/attrackingmanagerauthorizationstatusauthorized
