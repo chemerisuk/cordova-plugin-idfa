@@ -44,17 +44,12 @@
             dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
 
             dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
-
-                NSLog(@"executing requestTrackingAuthorizationWithCompletionHandler ");
-
                 [ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
                     CDVPluginResult* pluginResult =
                         [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsNSUInteger:status];
                     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
                 }];
             });
-
-        
         } else {
             CDVPluginResult* pluginResult = [CDVPluginResult
                                              resultWithStatus:CDVCommandStatus_ERROR
