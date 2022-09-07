@@ -47,7 +47,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
             <uses-permission android:name="android.permission.INTERNET" />
         </config-file>
 
-        <dependency id="cordova-support-android-plugin" version="~1.0.0"/>
+        <dependency id="cordova-support-android-plugin" version="~2.0.4"/>
 
         <framework src="com.google.android.gms:play-services-ads-identifier:$ANDROID_PLAY_ADID_VERSION" />
 
