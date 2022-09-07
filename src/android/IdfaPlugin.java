@@ -4,6 +4,7 @@ import android.content.Context;
 
 import by.chemerisuk.cordova.support.CordovaMethod;
 import by.chemerisuk.cordova.support.ReflectiveCordovaPlugin;
+import by.chemerisuk.cordova.support.ExecutionThread;
 
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 
