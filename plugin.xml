@@ -45,6 +45,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 
         <config-file target="AndroidManifest.xml" parent="/*">
             <uses-permission android:name="android.permission.INTERNET" />
+            <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
         </config-file>
 
         <dependency id="cordova-support-android-plugin" version="~2.0.4"/>
